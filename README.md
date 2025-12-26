@@ -151,4 +151,9 @@ B.Tech Student
 Rungta College of Engineering and Technology
 
 ## License
-This project is intended for educational and academic use.
+
+This project is licensed under the Creative Commons
+Attribution–NonCommercial 4.0 (CC BY-NC 4.0).
+
+Commercial use is not permitted without explicit
+permission from the author.
