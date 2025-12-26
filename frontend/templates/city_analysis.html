@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>City-wise Movie Analysis</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        display: ['Plus Jakarta Sans', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#f0f9ff',
+                            100: '#e0f2fe',
+                            200: '#bae6fd',
+                            300: '#7dd3fc',
+                            400: '#38bdf8',
+                            500: '#0ea5e9',
+                            600: '#0284c7',
+                            700: '#0369a1',
+                            800: '#075985',
+                            900: '#0c4a6e',
+                        }
+                    },
+                    animation: {
+                        'fade-in': 'fadeIn 0.5s ease-out',
+                        'slide-up': 'slideUp 0.6s ease-out',
+                        'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                    },
+                    keyframes: {
+                        fadeIn: {
+                            '0%': { opacity: '0' },
+                            '100%': { opacity: '1' },
+                        },
+                        slideUp: {
+                            '0%': { transform: 'translateY(20px)', opacity: '0' },
+                            '100%': { transform: 'translateY(0)', opacity: '1' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background-color: #f8fafc;
+            background-image: radial-gradient(#e2e8f0 1px, transparent 1px);
+            background-size: 24px 24px;
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06), 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+        }
+        .chart-container {
+            background: linear-gradient(135deg, rgba(15, 23, 42, 0.02) 0%, rgba(51, 65, 85, 0.02) 100%);
+            border-radius: 12px;
+            padding: 2px;
+            position: relative;
+            overflow: hidden;
+        }
+        .chart-container::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(14, 165, 233, 0.1) 0%, transparent 100%);
+            pointer-events: none;
+            z-index: 0;
+        }
+        .table-row-hover {
+            transition: all 0.2s ease;
+        }
+        .table-row-hover:hover {
+            background-color: rgb(248, 250, 252);
+            transform: translateX(2px);
+        }
+    </style>
+</head>
+<body class="min-h-screen text-slate-800 antialiased selection:bg-brand-100 selection:text-brand-900">
+
+    <div class="w-full max-w-5xl mx-auto px-4 sm:px-6 py-8 sm:py-12 animate-slide-up">
+        
+        <!-- Header Section -->
+        <div class="text-center mb-8 sm:mb-12">
+            <div class="inline-flex items-center justify-center p-2 mb-4 bg-white rounded-full shadow-sm border border-slate-100 ring-1 ring-slate-200/50">
+                <div class="px-3 py-1 bg-purple-50 rounded-full border border-purple-100">
+                    <span class="text-xs font-semibold text-purple-700 uppercase tracking-wider">City Analysis</span>
+                </div>
+                <span class="ml-2 pr-2 text-sm text-slate-500 font-medium">CineStats v1</span>
+            </div>
+            <h1 class="text-4xl sm:text-5xl font-display font-bold text-slate-900 tracking-tight mb-4">
+                City-wise Movie Analysis
+            </h1>
+            <p class="text-lg text-slate-500 max-w-2xl mx-auto leading-relaxed">
+                Select your city to discover the top 5 most popular movies and booking trends
+            </p>
+        </div>
+
+        <!-- Main Card -->
+        <div class="glass-card rounded-2xl border border-white/50 overflow-hidden relative mb-8">
+            <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-purple-400 via-brand-500 to-indigo-500"></div>
+            
+            <div class="p-8 sm:p-10">
+                
+                <!-- City Selection Form -->
+                <div class="mb-8">
+                    <form action="/city-analysis" method="post">
+                        <div class="space-y-6">
+                            <div>
+                                <label for="selected_city" class="block text-sm font-semibold text-slate-900 mb-3 flex items-center gap-2">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-brand-600"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                                    Select Your City
+                                </label>
+                                <select name="selected_city" id="selected_city" required class="w-full px-4 py-3 rounded-lg border border-slate-300 bg-white text-slate-900 font-medium focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-transparent transition-all duration-200 hover:border-brand-300 appearance-none cursor-pointer"
+                                    style="background-image: url('data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%2220%22 height=%2220%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22%23667eea%22 stroke-width=%222%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22%3E%3Cpolyline points=%226 9 12 15 18 9%22%3E%3C/polyline%3E%3C/svg%3E'); background-repeat: no-repeat; background-position: right 1rem center; background-size: 1.5em 1.5em; padding-right: 2.5rem;">
+                                    <option value="">-- Choose Your City --</option>
+                                    {% for city in cities %}
+                                    <option value="{{ city }}" {% if selected_city == city %}selected{% endif %}>
+                                        {{ city }}
+                                    </option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            
+                            <button type="submit" class="group w-full relative flex justify-center py-3.5 px-4 border border-transparent rounded-lg text-sm font-semibold text-white bg-slate-900 hover:bg-brand-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-500 disabled:bg-slate-300 disabled:cursor-not-allowed transition-all duration-200 shadow-lg shadow-slate-900/10 hover:shadow-brand-600/20 hover:-translate-y-0.5">
+                                <span class="flex items-center gap-2">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+                                    Analyze Top Movies
+                                </span>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Results Section (Only show when show_results is True) -->
+                {% if show_results %}
+                <div class="space-y-8 border-t border-slate-100 pt-8">
+                    
+                    <!-- City Header Card -->
+                    <div class="relative overflow-hidden rounded-xl bg-gradient-to-br from-slate-900 to-brand-800 p-8 text-white border border-brand-700/30 shadow-lg">
+                        <div class="absolute top-0 right-0 w-40 h-40 bg-brand-600/20 rounded-full blur-3xl -z-0"></div>
+                        <div class="relative z-10">
+                            <div class="flex items-center gap-3 mb-3">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                                <h2 class="text-3xl font-display font-bold">{{ selected_city }}</h2>
+                            </div>
+                            <p class="text-brand-100 text-base leading-relaxed">{{ summary }}</p>
+                        </div>
+                    </div>
+
+                    <!-- Chart Display -->
+                    <div class="chart-container">
+                        <div class="bg-white rounded-xl p-6 sm:p-8">
+                            <img src="/{{ chart_url }}" alt="{{ selected_city }}'s Top 5 Movies Chart" class="w-full h-auto rounded-lg transition-transform duration-300 hover:scale-105">
+                        </div>
+                    </div>
+
+                    <!-- Top Movies Table -->
+                    <div>
+                        <h3 class="text-2xl font-display font-bold text-slate-900 mb-6 flex items-center gap-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-yellow-500"><path d="M6 9c0-1 1-2 2-2h8c1 0 2 1 2 2v8c0 1-1 2-2 2H8c-1 0-2-1-2-2V9z"/><path d="M9 5V3h6v2"/><path d="M12 20v2"/></svg>
+                            Top 5 Movies Ranking
+                        </h3>
+                        <div class="overflow-x-auto rounded-xl border border-slate-200 shadow-sm">
+                            <table class="w-full">
+                                <thead>
+                                    <tr class="bg-gradient-to-r from-slate-900 to-brand-800 text-white">
+                                        <th class="px-6 py-4 text-left text-sm font-semibold">Rank</th>
+                                        <th class="px-6 py-4 text-left text-sm font-semibold">Movie Name</th>
+                                        <th class="px-6 py-4 text-right text-sm font-semibold">Total Seats Booked</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-slate-200">
+                                    {% for movie in top_movies %}
+                                    <tr class="table-row-hover">
+                                        <td class="px-6 py-5">
+                                            <span class="inline-flex items-center justify-center w-10 h-10 rounded-full font-display font-bold text-white {% if movie.rank == 1 %}bg-yellow-500{% elif movie.rank == 2 %}bg-slate-400{% elif movie.rank == 3 %}bg-orange-500{% else %}bg-brand-600{% endif %}">
+                                                {{ movie.rank }}
+                                            </span>
+                                        </td>
+                                        <td class="px-6 py-5">
+                                            <span class="font-semibold text-slate-900">{{ movie.name }}</span>
+                                        </td>
+                                        <td class="px-6 py-5 text-right">
+                                            <span class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-green-50 text-green-700 font-semibold text-sm border border-green-200">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 18c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2Z"/><path d="M17 18c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2Z"/><path d="M5 4h14v10H5Z"/><path d="M2 9h20"/></svg>
+                                                {{ movie.seats }}
+                                            </span>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+
+                <!-- Navigation Links -->
+                <div class="flex flex-col sm:flex-row gap-4 justify-center mt-8 {% if show_results %}border-t border-slate-100 pt-8{% endif %}">
+                    <a href="/" class="group relative flex justify-center py-3 px-6 border border-slate-300 rounded-lg text-sm font-semibold text-slate-700 bg-white hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-500 transition-all duration-200 shadow-sm hover:shadow-md">
+                        <span class="flex items-center gap-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+                            Home
+                        </span>
+                    </a>
+                    
+                    {% if show_results %}
+                    <a href="/city-analysis" class="group relative flex justify-center py-3 px-6 border border-transparent rounded-lg text-sm font-semibold text-white bg-slate-900 hover:bg-brand-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-500 transition-all duration-200 shadow-lg shadow-slate-900/10 hover:shadow-brand-600/20 hover:-translate-y-0.5">
+                        <span class="flex items-center gap-2">
+  <svg width="15" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <polyline points="23 4 23 10 17 10"></polyline>
+    <polyline points="1 20 1 14 7 14"></polyline>
+    <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
+  </svg>
+  Analyze Another City
+</span>
+                    </a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+<p class="text-center mt-8 text-sm text-slate-400">
+            &copy; Cinestats. All rights reserved by MD SAHID RAZA.
+        </p>
+    </div>
+
+</body>
+</html>
