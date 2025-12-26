@@ -24,7 +24,7 @@ The project focuses on clean analysis, dynamic visualization, and interactive ci
 
 
 ## Tech Stack:-
-## Tech Stack
+
 
 | Layer            | Technology   |
 |------------------|--------------|
@@ -32,33 +32,6 @@ The project focuses on clean analysis, dynamic visualization, and interactive ci
 | Data Processing  | Pandas       |
 | Visualization    | Matplotlib   |
 | Frontend         | HTML, CSS    |
-
-## Project Structure
-
-
-Cinestats/
-│
-├── backend/
-│   ├── main.py              # FastAPI application & routes
-│   ├── analysis.py          # Core data analysis & visualization logic
-│
-├── frontend/
-│   └── templates/
-│       ├── upload.html      # CSV upload UI
-│       ├── index.html       # Main dashboard (show-time analysis)
-│       └── city_analysis.html # City-wise analysis page
-│
-├── data/
-│   └── movie_bookings.csv   # Uploaded dataset (auto-updated)
-│
-├── outputs/
-│   └── charts/
-│       ├── showtime_popularity.png
-│       └── city_top_movies.png
-│
-├── venv/                    # Virtual environment (gitignored)
-├── requirements.txt
-└── README.md
 
 ## Installation & Setup
 
