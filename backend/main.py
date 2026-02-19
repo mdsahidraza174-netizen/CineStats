@@ -5,7 +5,7 @@ from fastapi.templating import Jinja2Templates
 from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
 
-from analysis import run_analysis, get_all_cities, get_city_movie_details
+from backend.analysis import run_analysis, get_all_cities, get_city_movie_details
 
 
 app = FastAPI()
