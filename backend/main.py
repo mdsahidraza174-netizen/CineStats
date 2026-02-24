@@ -9,8 +9,10 @@ from backend.analysis import run_analysis, get_all_cities, get_city_movie_detail
 
 
 app = FastAPI()
-
 templates = Jinja2Templates(directory="frontend/templates")
+# Ensure outputs folder exists (IMPORTANT for Render)
+if not os.path.exists("outputs"):
+    os.makedirs("outputs")
 app.mount("/outputs", StaticFiles(directory="outputs"), name="outputs")
 
 
